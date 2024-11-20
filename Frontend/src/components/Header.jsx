@@ -22,7 +22,7 @@ function Header() {
                 if(expiry && new Date().getTime() < expiry) {
                     setUserStatus(true);
                 } else {
-                    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/users/verification`, {
+                    const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/users/verification', {
                         method: 'GET',
                         mode: 'cors',  
                         credentials: 'include',
@@ -61,7 +61,7 @@ function Header() {
         e.preventDefault();
         try {    
             const validSearchInput = JSON.stringify({ searchInput });
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/search/videos`, {
+            const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/search/videos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

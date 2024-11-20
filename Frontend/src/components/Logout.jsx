@@ -12,7 +12,7 @@ function Logout() {
     useEffect(() => {
         const handleLogout = async () => {
             try {
-                const logoutResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/users/logout`, {
+                const logoutResponse = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/users/logout', {
                     method: 'GET',
                     mode: 'cors',
                     credentials: 'include',

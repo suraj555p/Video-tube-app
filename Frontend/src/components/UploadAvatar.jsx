@@ -27,7 +27,7 @@ function UploadAvatar() {
     formData.append("avatar", avatar[0]);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/users/set-avatar`, {
+      const response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/users/set-avatar`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
