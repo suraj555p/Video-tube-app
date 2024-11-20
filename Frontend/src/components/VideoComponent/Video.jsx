@@ -18,7 +18,7 @@ function Video() {
     const videoObj = UseReactQuery('https://videotube-server-kmvo.onrender.com/api/v1/videos/home-videos', 'GET')
     const location = useLocation();
     const videoId = location.state;
-    const videoInfo = UseReactQuery('https://videotube-server-kmvo.onrender.com/api/v1/videos/c/${videoId}', 'GET')
+    const videoInfo = UseReactQuery(`https://videotube-server-kmvo.onrender.com/api/v1/videos/c/${videoId}`, 'GET')
     const userId = videoInfo?.response?.owner?._id;
     const [videoData, setVideoData] = useState(null);
     const token = useSelector(state => state.accessTokenSlice.token);
@@ -31,7 +31,7 @@ function Video() {
     
     const onAddComment = useCallback(async (commentContent) => {
         try {
-            const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/comments/d/${videoId}', {
+            const response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/comments/d/${videoId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -55,7 +55,7 @@ function Video() {
 
     const fetchVideoData = useCallback(async () => {
         try {
-            const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/videos/c/${videoId}', {
+            const response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/videos/c/${videoId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -78,7 +78,7 @@ function Video() {
 
     const fetchComments = useCallback(async () => {
         try {
-            const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/comments/d/${videoId}', {
+            const response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/comments/d/${videoId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -109,7 +109,7 @@ function Video() {
             async () => {
                 try {
                     if (userId) {
-                        let response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/s/${userId}', {
+                        let response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/s/${userId}`, {
                             method: 'GET',
                             headers: {
                                 'Authorization': `Bearer ${token}`
@@ -168,7 +168,7 @@ function Video() {
     }, [curUser]);
 
     const handleSubscribeButton = async () => {
-        let response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/c/${userId}', {
+        let response = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/c/${userId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -178,7 +178,7 @@ function Video() {
         });
 
         if(response.ok) {
-            let response2 = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/s/${userId}', {
+            let response2 = await fetch(`https://videotube-server-kmvo.onrender.com/api/v1/subscriptions/s/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
