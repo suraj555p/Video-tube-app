@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react';
-import { NavLink, json } from 'react-router-dom';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { setTokenWithExpiry } from '../store/accessTokenSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUser, faClockRotateLeft, faUpload, faRightFromBracket, faUserPlus, faDownLeftAndUpRightToCenter, faArrowLeftRotate, faArrowLeft, faArrowsLeftRightToLine } from '@fortawesome/free-solid-svg-icons';
-import '@fortawesome/fontawesome-svg-core/styles.css';
 
 function Header() {
     const [searchInput, setSearchInput] = useState("");
-    const [userStatus, setUserStatus] = useState(null); 
+    const [userStatus, setUserStatus] = useState(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -19,23 +14,26 @@ function Header() {
         const checkUserStatus = async () => {
             try {
                 let expiry = JSON.parse(localStorage.getItem("accessToken"));
-                if(expiry && new Date().getTime() < expiry) {
+                if (expiry && new Date().getTime() < expiry) {
                     setUserStatus(true);
                 } else {
-                    const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/users/verification', {
-                        method: 'GET',
-                        mode: 'cors',  
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                    });
+                    const response = await fetch(
+                        'https://videotube-server-kmvo.onrender.com/api/v1/users/verification',
+                        {
+                            method: 'GET',
+                            mode: 'cors',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                            },
+                        }
+                    );
 
                     if (response.ok) {
                         const jsonResponse = await response.json();
-                        if(jsonResponse.data.isAuthenticated) {
-                            dispatch(setTokenWithExpiry({ttl: 30000}));
+                        if (jsonResponse.data.isAuthenticated) {
+                            dispatch(setTokenWithExpiry({ ttl: 30000 }));
                             setUserStatus(true);
                         } else {
                             setUserStatus(false);
@@ -44,37 +42,38 @@ function Header() {
                         dispatch(logout());
                         setUserStatus(false);
                     }
-                            
-                }    
+                }
             } catch (error) {
                 console.error('Error checking user status:', error);
                 dispatch(logout());
-                setUserStatus(false); 
+                setUserStatus(false);
             }
         };
-    
+
         checkUserStatus();
-    }, []);
-    
+    }, [dispatch]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {    
+        try {
             const validSearchInput = JSON.stringify({ searchInput });
-            const response = await fetch('https://videotube-server-kmvo.onrender.com/api/v1/search/videos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'cors',
-                credentials: 'include',
-                body: validSearchInput,
-            });
-        
+            const response = await fetch(
+                'https://videotube-server-kmvo.onrender.com/api/v1/search/videos',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors',
+                    credentials: 'include',
+                    body: validSearchInput,
+                }
+            );
+
             if (!response.ok) {
                 console.log('Something went wrong');
             }
-        
+
             const searchResult = await response.json();
             navigate(`/search/videos`, { state: searchResult });
         } catch (error) {
@@ -86,103 +85,123 @@ function Header() {
     const handleInput = (e) => {
         setSearchInput(e.target.value);
     };
-    
 
     return (
-        <div className='w-full shadow-lg flex flex-col justify-center items-center'>
+        <header className="w-full bg-black text-white">
+            {/* Top Bar */}
+            <div className="flex flex-col md:flex-row justify-between items-center py-3 px-4">
+                {/* Search Bar */}
+                <form
+                    onSubmit={handleSubmit}
+                    className="w-full md:w-auto flex items-center mb-3 md:mb-0 md:flex-grow md:justify-center"
+                >
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="w-full md:w-1/2 max-w-md py-1 px-4 text-sm border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500"
+                        name="content"
+                        value={searchInput}
+                        onChange={handleInput}
+                    />
+                    <button
+                        type="submit"
+                        className="bg-gray-500 text-white py-1 px-4 text-sm rounded-r-full"
+                    >
+                        Search
+                    </button>
+                </form>
 
-            <form onSubmit={handleSubmit} className="w-full md:w-1/2 mt-2 mb-2 md:mb-4 flex justify-center items-center">
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="w-3/4 py-1 md:py-2 px-4 rounded-l-full border border-gray-300 focus:outline-none focus:border-blue-500"
-                    name='content'
-                    value={searchInput}
-                    onChange={handleInput}
-                />
-                <input className="bg-blue-500 text-white py-1 md:py-2 px-4 rounded-r-full" type='submit' value='Search' />
-            </form>
+                {/* Sign-In Button */}
+                {!userStatus && (
+                    <NavLink
+                        to="/login"
+                        className="bg-gray-400 px-4 py-1.5 text-sm rounded-lg hover:bg-gray-500"
+                    >
+                        Sign-In
+                    </NavLink>
+                )}
+            </div>
 
-            <div className="flex mb-3">
-                <ul className="flex gap-8 font-semibold">
-                    
-                    {userStatus === true && (
-                        <>
-                        <li>
-                            <NavLink
-                                to={"/"}
-                                className={({isActive}) =>
-                                    `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-blue-500" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-700 lg:p-0`
-                                }
-                            >
-                                <FontAwesomeIcon icon={faHome} />
-                            </NavLink>
-                        </li>
-                            <li>
-                                <NavLink
-                                    to={"/profile"}
-                                    className={({isActive}) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-blue-500" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-700 lg:p-0`
-                                    }
-                                >
-                                    <FontAwesomeIcon icon={faUser} />
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to={"/history"}
-                                    className={({isActive}) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-blue-500" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-700 lg:p-0`
-                                    }
-                                >
-                                    <FontAwesomeIcon icon={faClockRotateLeft} />                                    
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to={"/upload"}
-                                    className={({isActive}) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-blue-500" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-700 lg:p-0`
-                                    }
-                                >
-                                    <FontAwesomeIcon icon={faUpload} />
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to={"/logout"}
-                                    className={({isActive}) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-blue-500" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-700 lg:p-0`
-                                    }
-                                >
-                                    <FontAwesomeIcon icon={faRightFromBracket} />
-                                </NavLink>
-                            </li>
-                        </>
-                    )}
-                    {!userStatus && (
+            {/* Navigation Menu */}
+            <nav className="w-full bg-black py-2">
+                <ul className="flex flex-wrap justify-center gap-6 text-sm md:text-base">
+                    {userStatus && (
                         <>
                             <li>
                                 <NavLink
-                                    to={"/login"}
-                                    className="bg-gray-400 px-4 py-1.5 md:py-2 block rounded-2xl text-sm text-white"
+                                    to="/"
+                                    className={({ isActive }) =>
+                                        `block py-2 px-3 ${
+                                            isActive
+                                                ? 'text-blue-500'
+                                                : 'text-white hover:text-blue-300'
+                                        }`
+                                    }
                                 >
-                                    Sign-In / Sign-Up
+                                    Home
                                 </NavLink>
                             </li>
-                            {/* <li>
+                            <li>
                                 <NavLink
-                                    to={"/register"}
-                                    className="bg-blue-500 px-4 py-2 block rounded-2xl text-sm text-white"
+                                    to="/profile"
+                                    className={({ isActive }) =>
+                                        `block py-2 px-3 ${
+                                            isActive
+                                                ? 'text-blue-500'
+                                                : 'text-white hover:text-blue-300'
+                                        }`
+                                    }
                                 >
-                                    SignUp
+                                    Profile
                                 </NavLink>
-                            </li> */}
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/history"
+                                    className={({ isActive }) =>
+                                        `block py-2 px-3 ${
+                                            isActive
+                                                ? 'text-blue-500'
+                                                : 'text-white hover:text-blue-300'
+                                        }`
+                                    }
+                                >
+                                    History
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/upload"
+                                    className={({ isActive }) =>
+                                        `block py-2 px-3 ${
+                                            isActive
+                                                ? 'text-blue-500'
+                                                : 'text-white hover:text-blue-300'
+                                        }`
+                                    }
+                                >
+                                    Upload
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/logout"
+                                    className={({ isActive }) =>
+                                        `block py-2 px-3 ${
+                                            isActive
+                                                ? 'text-blue-500'
+                                                : 'text-white hover:text-blue-300'
+                                        }`
+                                    }
+                                >
+                                    Logout
+                                </NavLink>
+                            </li>
                         </>
                     )}
                 </ul>
-            </div>
-        </div>
+            </nav>
+        </header>
     );
 }
 

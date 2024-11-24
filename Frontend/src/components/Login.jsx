@@ -61,7 +61,7 @@ function Login() {
 
   return (
 
-    <div className="flex flex-col h-screen justify-center items-center bg-gray-100 text-xs md:text-lg">
+    <div className="flex flex-col h-screen justify-center items-center bg-softBlue text-xs md:text-lg">
       { 
         loading &&
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-900 opacity-75 flex justify-center items-center z-50">
@@ -72,7 +72,7 @@ function Login() {
         <FontAwesomeIcon icon={faArrowLeft} />
       </div>
 
-      <div className="bg-white p-10 rounded-lg shadow-md ">
+      <div className="bg-gray-200 p-10 rounded-lg shadow-md ">
         <h2 className="text-xl md:text-3xl font-semibold text-gray-800 mb-5">Sign In</h2>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <div className="flex flex-col">
@@ -108,7 +108,7 @@ function Login() {
 
           <button
             type="submit"
-            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            className="bg-black text-white font-semibold py-2 px-4 rounded-md  transition duration-300"
           >
             Login
           </button>

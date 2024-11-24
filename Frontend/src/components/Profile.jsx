@@ -23,7 +23,7 @@ function Profile() {
     }
 
     return (
-        <div className='flex flex-wrap items-center flex-col bg-gray-100 min-h-screen w-full'>
+        <div className='flex flex-wrap items-center flex-col bg-softBlue min-h-screen w-full'>
             <Header />
             {
                 (user.error || stats.error || videos.error) &&
@@ -38,7 +38,7 @@ function Profile() {
                 (!user.error && !user.loading && !videos.error && !videos.loading && !stats.error && !stats.loading &&
                     <div className='w-full'>
                         {/* profile section */}
-                        <div className="bg-gray-100 rounded-lg shadow-lg p-6 w-full">
+                        <div className="bg-gray-300 rounded-lg shadow-lg p-6 w-full">
                             {/* Rounded profile photo */}
                             <div className="flex items-center justify-center mb-6">
                                 <img className="rounded-full h-24 w-24 object-cover" src={user.response.avatar ? user.response.avatar : 'image/null-avatar.png'} alt='Profile photo' />

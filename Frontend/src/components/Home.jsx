@@ -18,13 +18,13 @@ function Home() {
         <>
             <Header />
             <div className="flex flex-col items-center">
-                <div className='bg-gray-200 min-h-screen p-4 w-full'>
+                <div className='bg-softBlue min-h-screen p-4 w-full'>
                     {videoObj.error && <ErrorPage />}
                     {videoObj.loading && <LoaderPage />}
                     {videoObj.response.length === 0 && <div className='w-full text-xl font-semibold text-black flex flex-wrap justify-center items-center'>No videos</div>}
                     {
                         !videoObj.error && !videoObj.loading && videoObj.response.length !== 0 &&
-                        <div className='flex flex-wrap items-center justify-center gap-6'>
+                        <div className='flex flex-wrap items-left justify-left gap-7'>
                             {videoObj.response.map((video) => (
                                 <div key={video._id} onClick={() => handleClick(video._id)} className='w-80'>
                                     <VideoCard 
